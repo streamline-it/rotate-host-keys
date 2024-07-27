@@ -1,0 +1,12 @@
+---
+# defaults file for rotate-host-keys
+#
+rotate_host_keys_userdir: path to home directory
+rotate_host_keys_user: username
+
+rotate_host_keys_target_hosts:
+  - hostname: hostname
+    username: usename
+    homedir: path to home directoyr
+    remote_dir: remote directory on the controller
+

@@ -1,0 +1,22 @@
+---
+- name: catch error
+  block:
+    - name: fetch host keys
+      register:  fetch_task
+      loop:
+        "{{ rotate_host_keys_target_hosts }}"
+      ansible.builtin.fetch:
+        src: "{{ item['homedir'] }}/.ssh/id_rsa-{{ item['hostname'] }}.pub"
+        dest: ./hosts
+
+  rescue:
+
+    - name: if the key doesn't exist, continue
+      when: "'the remote file does not exist' in fetch_task['results'][0]['msg']"
+      ansible.builtin.debug:
+        msg: "Key doesn't exist, No problem, continue.."
+
+    - name: some other error condition, fail out
+      when: "'the remote file does not exist' not in fetch_task['results'][0]['msg']"
+      ansible.builtin.fail:
+        msg: "Unknown error.  Failing out."

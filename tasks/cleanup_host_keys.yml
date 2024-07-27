@@ -1,0 +1,18 @@
+- name : ensure new keys have correct ownership/modes
+  loop:
+    "{{ rotate_host_keys_target_hosts }}"
+  ansible.builtin.file:
+    path: "/home/{{ item['username'] }}/.ssh/id_rsa-{{ item['hostname'] }}.pub"
+    owner: "{{ item['username'] }}"
+    group: "{{ item['username'] }}"
+    mode: "0600"
+
+- name : ensure new keys have correct ownership/modes
+  loop:
+    "{{ rotate_host_keys_target_hosts }}"
+  ansible.builtin.file:
+    path: "/home/{{ item['username'] }}/.ssh/id_rsa-{{ item['hostname'] }}"
+    owner: "{{ item['username'] }}"
+    group: "{{ item['username'] }}"
+    mode: "0600"
+

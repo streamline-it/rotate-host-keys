@@ -1,0 +1,39 @@
+---
+# tasks file for rotate-host-keys
+
+#  each host entry under host_vars directory should contain a vars.yml file with the following contents:
+#  rotate_host_keys_target_hosts:
+#    - hostname: fqdn of a host user needs to login into
+#      username: rich
+#      homedir: /home/rich
+
+- name: call task to see if user's .ssh directory exists
+  ansible.builtin.include_tasks: chk_key_dir.yml
+
+- name: call tasks to fetch current host keys
+  ansible.builtin.include_tasks: get_host_keys.yml
+
+- name: call task to remove current host keys
+  ansible.builtin.include_tasks: purge_host_keys.yml
+
+- name: call task to remove current authorized host keys from targeted hosts
+  vars:
+    state_value: absent
+  ansible.builtin.include_tasks: authorized_keys.yml
+
+- name: ensure new host keys are generated
+  loop:
+    "{{ rotate_host_keys_target_hosts }}"
+  ansible.builtin.command:
+    cmd: "ssh-keygen -t rsa -b 4096 -P '' -C {{ item['username'] }}@{{ ansible_facts['fqdn'] }} -f {{ item['homedir'] }}/.ssh/id_rsa-{{ item['hostname'] }}"
+
+- name: call task to make sure keys have correct ownership/modes
+  ansible.builtin.include_tasks: cleanup_host_keys.yml
+
+- name: call task to fetch new host keys to the controller
+  ansible.builtin.include_tasks: get_host_keys.yml
+
+- name: call task to ensure new authorized keys exist on target hosts
+  vars:
+    state_value: present
+  ansible.builtin.include_tasks: authorized_keys.yml

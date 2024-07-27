@@ -1,0 +1,10 @@
+---
+
+- name: ensure .ssh directory exists 
+  ansible.builtin.file:
+    path: "{{ rotate_host_keys_userdir }}/.ssh"
+    mode: "0700"
+    force: true
+    owner: "{{ rotate_host_keys_user }}"
+    group: "{{ rotate_host_keys_user }}"
+    state: directory

@@ -1,0 +1,34 @@
+---
+- name: catch scenario where there are no host keys
+  block:
+
+    - name: see if authorized_keys file exists
+      register: stat_var
+      ansible.builtin.stat:
+        path: "{{ rotate_host_keys_userdir }}/.ssh/authorized_keys"
+        get_attributes: true
+
+    - name: ensure authorized_keys file exists
+      when: "stat_var['stat']['exists'] == false"
+      ansible.builtin.copy:
+        content: ""
+        dest: "{{ rotate_host_keys_userdir }}/.ssh/authorized_keys"
+        owner: "{{ rotate_host_keys_user }}"
+        group: "{{ rotate_host_keys_user }}"
+        mode: "0600"
+
+    - name: "ensure new authorized keys exist are {{ state_value }} on the host"
+      register: auth_task_var
+      loop:
+        "{{ rotate_host_keys_target_hosts }}"
+      ansible.builtin.authorized_key:
+        user: "{{ item['username'] }}"
+        key: "{{ lookup('file', './hosts/' + item['hostname'] + item['remote_dir'] + '/.ssh/id_rsa-' + ansible_facts['fqdn'] + '.pub') }}"
+        state: "{{ state_value }}"
+
+  rescue:
+
+    - name: fail out if anything other than missing key
+      when: "'file not found' not in auth_task_var['msg']"
+      ansible.builtin.fail:
+        msg: "Unknown error. Failing out."
