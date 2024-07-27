@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Creates host keys for specified servers and rotates keys for all hosts specified
 
 Requirements
 ------------
