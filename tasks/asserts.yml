@@ -1,0 +1,11 @@
+---
+- name: ensure needed variables are defined
+  ansible.builtin.assert:
+    that: 
+      - rotate_host_keys_userdir
+      - rotate_host_keys_user
+      - rotate_host_keys_target_hosts
+    fail_msg: >
+      "Make sure to define the following variables
+      (rotate_host_keys_userdir, rotate_host_keys_user, 
+      rotate_host_keys_target_hosts)"

@@ -7,6 +7,6 @@ rotate_host_keys_user: username
 rotate_host_keys_target_hosts:
   - hostname: hostname
     username: usename
-    homedir: path to home directoyr
+    homedir: path to home directory
     remote_dir: remote directory on the controller
 
