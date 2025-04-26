@@ -7,7 +7,7 @@
 #      username: rich
 #      homedir: /home/rich
 
-- name: call tasks to make sure needed variable(s) are define
+- name: call tasks to make sure needed variable(s) are defined
   ansible.builtin.include_tasks: asserts.yml
 
 - name: call task to see if user's .ssh directory exists
