@@ -1,5 +1,6 @@
 ---
 - name: ensure needed variables are defined
+  tags: rotate-host-keys
   ansible.builtin.assert:
     that: 
       - rotate_host_keys_userdir

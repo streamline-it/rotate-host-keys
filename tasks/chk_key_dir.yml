@@ -1,6 +1,7 @@
 ---
 
 - name: ensure .ssh directory exists 
+  tags: rotate-host-keys
   ansible.builtin.file:
     path: "{{ rotate_host_keys_userdir }}/.ssh"
     mode: "0700"
