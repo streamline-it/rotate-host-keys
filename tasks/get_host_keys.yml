@@ -16,7 +16,7 @@
       tags: rotate-host-keys
       when: "'the remote file does not exist' in fetch_task['results'][0]['msg']"
       ansible.builtin.debug:
-        msg: "Key doesn't exist, No problem, continue.."
+        msg: "Probably new host or first time this role was run, the key file doesn't exist, No problem, continue.."
 
     - name: some other error condition, fail out
       tags: rotate-host-keys
