@@ -10,6 +10,9 @@
         src: "{{ item['homedir'] }}/.ssh/id_rsa-{{ item['hostname'] }}.pub"
         dest: ./hosts
 
+    - ansible.builtin.debug:
+        var: fetch_task
+
   rescue:
     
     - name: if the key doesn't exist, continue
@@ -18,11 +21,9 @@
         "{{ rotate_host_keys_target_hosts }}"
       loop_control:
         index_var: rotate_host_keys_index
-      debugger: on_failed
       when: 
         - fetch_task['results'][rotate_host_keys_index]['failed'] == true
         - "'remote file does not exist' in fetch_task['results'][rotate_host_keys_index]['msg']"
-
       ansible.builtin.debug:
         msg: "Probably new host or first time this role was run, the key file doesn't exist, No problem, continue.."
 

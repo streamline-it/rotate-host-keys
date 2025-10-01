@@ -5,6 +5,7 @@
     - name: see if authorized_keys file exists
       register: stat_var
       tags: rotate-host-keys
+      changed_when: false
       ansible.builtin.stat:
         path: "{{ rotate_host_keys_userdir }}/.ssh/authorized_keys"
         get_attributes: true
