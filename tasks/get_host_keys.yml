@@ -4,14 +4,14 @@
     - name: fetch host keys
       tags: rotate-host-keys
       register:  fetch_task
+      failed_when: 
+        - fetch_task['failed'] == true
+        - fetch_task['msg'] != "the remote file does not exist, not transferring, ignored"
       loop:
         "{{ rotate_host_keys_target_hosts }}"
       ansible.builtin.fetch:
         src: "{{ item['homedir'] }}/.ssh/id_rsa-{{ item['hostname'] }}.pub"
         dest: ./hosts
-
-    - ansible.builtin.debug:
-        var: fetch_task
 
   rescue:
     
