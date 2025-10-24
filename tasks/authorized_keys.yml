@@ -4,7 +4,6 @@
 
     - name: see if authorized_keys file exists
       register: stat_var
-      tags: rotate-host-keys
       changed_when: false
       ansible.builtin.stat:
         path: "{{ rotate_host_keys_userdir }}/.ssh/authorized_keys"
@@ -12,7 +11,6 @@
 
     - name: ensure authorized_keys file exists
       when: "stat_var['stat']['exists'] == false"
-      tags: rotate-host-keys
       ansible.builtin.copy:
         content: ""
         dest: "{{ rotate_host_keys_userdir }}/.ssh/authorized_keys"
@@ -22,7 +20,6 @@
 
     - name: "ensure new authorized keys exist are {{ state_value }} on the host"
       register: auth_task_var
-      tags: rotate-host-keys
       loop:
         "{{ rotate_host_keys_target_hosts }}"
       ansible.builtin.authorized_key:
@@ -34,6 +31,5 @@
 
     - name: fail out if anything other than missing key
       when: "'file not found' not in auth_task_var['msg']"
-      tags: rotate-host-keys
       ansible.builtin.fail:
         msg: "Unknown error. Failing out."

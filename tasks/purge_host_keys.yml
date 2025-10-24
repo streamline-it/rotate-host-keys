@@ -1,6 +1,5 @@
 ---
 - name: ensure current host private keys are removed
-  tags: rotate-host-keys
   loop:
     "{{ rotate_host_keys_target_hosts }}"
   ansible.builtin.file:
@@ -8,7 +7,6 @@
     state: absent
 
 - name: ensure current host public keys are removed
-  tags: rotate-host-keys
   loop:
     "{{ rotate_host_keys_target_hosts }}"
   ansible.builtin.file:

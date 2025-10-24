@@ -2,7 +2,6 @@
 - name: catch error
   block:
     - name: fetch host keys
-      tags: rotate-host-keys
       register:  fetch_task
       failed_when: 
         - fetch_task['failed'] == true
@@ -16,7 +15,6 @@
   rescue:
     
     - name: if the key doesn't exist, continue
-      tags: rotate-host-keys
       loop:
         "{{ rotate_host_keys_target_hosts }}"
       loop_control:
@@ -28,7 +26,6 @@
         msg: "Probably new host or first time this role was run, the key file doesn't exist, No problem, continue.."
 
     - name: some other error condition, fail out
-      tags: rotate-host-keys
       loop:
         "{{ rotate_host_keys_target_hosts }}"
       loop_control:

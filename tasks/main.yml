@@ -8,44 +8,35 @@
 #      homedir: /home/rich
 
 - name: call tasks to make sure needed variable(s) are defined
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: asserts.yml
 
 - name: call task to see if user's .ssh directory exists
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: chk_key_dir.yml
 
 - name: call tasks to fetch current host keys
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: get_host_keys.yml
 
 - name: call task to remove current host keys
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: purge_host_keys.yml
 
 - name: call task to remove current authorized host keys from targeted hosts
   vars:
     state_value: absent
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: authorized_keys.yml
 
 - name: ensure new host keys are generated
-  tags: rotate-host-keys
   loop:
     "{{ rotate_host_keys_target_hosts }}"
   ansible.builtin.command:
     cmd: "ssh-keygen -t rsa -b 4096 -P '' -C {{ item['username'] }}@{{ ansible_facts['fqdn'] }} -f {{ item['homedir'] }}/.ssh/id_rsa-{{ item['hostname'] }}"
 
 - name: call task to make sure keys have correct ownership/modes
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: cleanup_host_keys.yml
 
 - name: call task to fetch new host keys to the controller
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: get_host_keys.yml
 
 - name: call task to ensure new authorized keys exist on target hosts
   vars:
     state_value: present
-  tags: rotate-host-keys
   ansible.builtin.include_tasks: authorized_keys.yml
