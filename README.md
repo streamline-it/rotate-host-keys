@@ -34,11 +34,48 @@ None
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+You'll need to run this for each host to create the necessary host keys and 
+authorized_keys files.
 
-    - hosts: servers
-      roles:
-         - rotate-host-keys
+You'll need to repeat this for the node6 host too.  See below:
+
+- name: test rotate-host-keys role for node5
+  hosts: node5.rocky93.example.com
+  become: true
+
+  vars:
+
+    rotate_host_keys_userdir: /home/rich
+    rotate_host_keys_user: rich
+
+    rotate_host_keys_target_hosts:
+      - hostname: node6.rocky93.example.com
+        username: rich
+        homedir: /home/rich
+        remote_dir: /home/rich
+
+  roles:
+
+    - name: rotate-host-keys
+
+- name: test rotate-host-keys role for node6
+  hosts: node6.rocky93.example.com
+  become: true
+
+  vars:
+
+    rotate_host_keys_userdir: /home/rich
+    rotate_host_keys_user: rich
+
+    rotate_host_keys_target_hosts:
+      - hostname: node5.rocky93.example.com
+        username: rich
+        homedir: /home/rich
+        remote_dir: /home/rich
+
+  roles:
+
+    - name: rotate-host-keys
 
 License
 -------
